@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native-elements";
-import gitlab from '../interface/GitlabInterface';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import nasa from '../interface/NasaInterface';
+import { View, StyleSheet, ScrollView , Image} from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
-    const [projectList, setProjectList] = useState();
+    const [image, setImage] = useState('');
     useEffect(() => {
         async function projects() {
-            const response = await gitlab.get('/projects?membership=true')
-            setProjectList(response.data);
+            const response = await nasa.get('planetary/apod')
+            setImage(response.data.url)
         }
 
         projects();
@@ -17,15 +17,8 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <>
-            <ScrollView>
-                <Text style={styles.title}>Projetos</Text>
-                {projectList && projectList.map(a => {
-                    return (
-                        <View key={a.id} style={styles.noteView}>
-                            <Text style={styles.title}>{a.name_with_namespace}</Text>
-                        </View>
-                    )
-                })}
+            <ScrollView style={{ padding: 10 }}>
+                {image != '' ? <Image style={{width:'100%',height:500}} source={{ uri: image }}></Image> : <Text>Sem imagem</Text>}
             </ScrollView>
         </>
     );

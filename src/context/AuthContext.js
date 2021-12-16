@@ -49,20 +49,14 @@ const AuthProvider = ({ children }) => {
 
     }
 
-    const signIn = async ({ username, password }) => {
+    const signIn = async ({ apikey }) => {
         try {
             const response = await axios({
-                method: "post",
-                url: "https://gitlab.com/oauth/token",
-                data: {
-                    grant_type: "password",
-                    username,
-                    password,
-                },
+                method: "get",
+                url: "https://api.nasa.gov/planetary/apod?api_key=" + apikey
             });
-            console.log(response)
-            await setToken(response.data.access_token);
-            dispatch({ type: "signIn", payload: response.data.access_token });
+            await setToken(apikey);
+            dispatch({ type: "signIn", payload: apikey });
             RootNavigation.navigate("Home");
         } catch (err) {
             console.log(err)
@@ -73,12 +67,27 @@ const AuthProvider = ({ children }) => {
         }
     };
 
+    const signOut = async () => {
+        try {
+            await setToken('');
+            dispatch({ type: "signOut" });
+            RootNavigation.navigate('Login');
+        } catch (err) {
+            console.log(err)
+            dispatch({
+                type: "error",
+                payload: "Problemas para deslogar usuário.",
+            });
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
                 authState,
                 signIn,
-                tryLocalSignIn
+                tryLocalSignIn,
+                signOut
             }}
         >
             {children}

@@ -1,34 +1,29 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Text, Input, Button } from "react-native-elements";
+import { Text, Input, Button, Image } from "react-native-elements";
 import { AuthContext } from "../context/AuthContext";
+import nasaLogo from '../../assets/favicon-192.png'
 
 
 const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [apikey, setApikey] = useState("");
   const { authState, signIn, tryLocalSignIn } = useContext(AuthContext);
 
   useEffect(() => {
     tryLocalSignIn();
-  },[]);
+  }, []);
 
   return (
     <>
+      <Image style={{ width: 100, height: 100, marginHorizontal: 'auto' }} source={{ uri: nasaLogo }}></Image>
       <Input
-        placeholder="Username"
-        onChangeText={(value) => setUsername(value)}
-        value={username}
-      />
-      <Input
-        placeholder="Password"
-        onChangeText={(value) => setPassword(value)}
-        value={password}
-        secureTextEntry={true}
+        placeholder="Api Key"
+        onChangeText={(value) => setApikey(value)}
+        value={apikey}
       />
       <Button
         title="Entrar"
         onPress={() => {
-          signIn({ username, password });
+          signIn({ apikey: apikey });
         }}
       />
       {authState.error ? <Text>{authState.error}</Text> : null}

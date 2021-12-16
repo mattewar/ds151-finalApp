@@ -1,16 +1,14 @@
 import axios from 'axios';
 import { getToken } from './StorageInterface'
 
-const gitlab = axios.create({
-  baseURL: 'https://gitlab.com/api/v4/'
+const nasa = axios.create({
+  baseURL: 'https://api.nasa.gov/'
 });
 
-gitlab.interceptors.request.use(
+nasa.interceptors.request.use(
   async (config) => {
     const access_token = await getToken();
-    if (access_token) {
-      config.headers.Authorization = `Bearer ${access_token}`;
-    }
+    config.params = {...config.params, api_key: access_token}
     return (config);
   },
   (err) => {
@@ -18,4 +16,4 @@ gitlab.interceptors.request.use(
   }
 )
 
-export default gitlab;
+export default nasa;
